@@ -1,0 +1,22 @@
+version: 3
+
+images:
+  base_image:
+    name: 'registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel9:latest'
+
+dependencies:
+  python_interpreter:
+    package_system: python
+    python_path: /usr/bin/python
+  ansible_core:
+    package_pip: ansible-core
+  ansible_runner:
+    package_pip: ansible-runner
+  system:
+  - openssh-clients
+  - sshpass
+  galaxy: requirements.yml
+  python: requirements.txt
+
+options:
+  package_manager_path: /usr/bin/microdnf

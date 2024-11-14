@@ -1,0 +1,2 @@
+extract_dest_path: /tmp/wip/extract
+openshift_installer_path: "{{ extract_dest_path }}/openshift-install"
