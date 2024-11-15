@@ -1,0 +1,52 @@
+---
+- name: "Create {{ workdir }}"
+  ansible.builtin.file:
+    path: "{{ workdir }}"
+    state: directory
+    mode: '0755'
+    recurse: true
+
+- name: "Stat tarball"
+  ansible.builtin.stat:
+    path: "{{ workdir }}/openshift-install-linux.tar.gz"
+  register: file_tarball
+
+- name: Download openshift-install
+  when: "not file_tarball.stat.exists"
+  ansible.builtin.get_url:
+    url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-install-linux.tar.gz
+    dest: "{{ workdir }}/openshift-install-linux.tar.gz"
+    mode: '0755'
+
+- name: "Stat executable"
+  ansible.builtin.stat:
+    path: "{{ workdir }}/openshift-install"
+  register: file_executable
+
+- name: Extract openshift-install
+  when: "not file_executable.stat.exists"
+  ansible.builtin.unarchive:
+    src: "{{ workdir }}/openshift-install-linux.tar.gz"
+    dest: "{{ workdir }}/"
+
+- name: Check extracted installer and agent subcommand
+  ansible.builtin.shell:
+    cmd: "{{ workdir }}/openshift-install agent --help"
+  register: result
+  failed_when: >
+    ('unknown command' in result.stderr) or
+    ('No such file or directory' in result.stderr)
+
+- name: Set openshift_version
+  ansible.builtin.shell:
+    cmd: "{{ workdir }}/openshift-install version | awk '/openshift-install/ {print $2}'"
+  register: version
+
+- name: Set openshift_install_path
+  ansible.builtin.set_fact:
+    openshift_version: "{{ version.stdout }}"
+    openshift_install_path: "{{ workdir }}/openshift-install"
+
+- name: Debug openshift-install install
+  ansible.builtin.debug:
+    msg: "openshift_install_path: {{ openshift_install_path }}, openshift_version: {{ openshift_version }}"

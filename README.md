@@ -1,8 +1,9 @@
 # Ansible for Kubernetes/OpenShift
 
-## Kubernetes Collection
+## Resources
 - https://docs.ansible.com/ansible/latest/collections/kubernetes/core/docsite/scenario_guide.html
 - https://github.com/redhatci/ansible-collection-redhatci-ocp
+- https://github.com/ahmbas/ansible-ocp-virt/
 
 ## Commands
 

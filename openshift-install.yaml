@@ -1,4 +1,4 @@
 - name: Download and extract openshift-install
   hosts: localhost
   roles:
-    - download_openshift_install
+    - install_openshift_install
