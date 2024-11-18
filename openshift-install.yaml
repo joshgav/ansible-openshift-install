@@ -1,4 +1,15 @@
-- name: Download and extract openshift-install
-  hosts: localhost
-  roles:
-    - install_openshift_install
+- name: Prepare OpenShift ISO
+  hosts: bastion
+  tasks:
+  - name: Include vars
+    ansible.builtin.include_vars:
+      dir: vars
+  - name: Install openshift-install
+    include_role:
+      name: install_openshift_install
+  - name: Generate manifests
+    include_role:
+      name: generate_manifests
+  - name: Generate Agent ISO
+    include_role:
+      name: generate_agent_iso

@@ -6,6 +6,13 @@
     mode: '0755'
     recurse: true
 
+- name: Install dependencies
+  become: true
+  ansible.builtin.dnf:
+    state: present
+    name:
+      - nmstate
+
 - name: "Stat tarball"
   ansible.builtin.stat:
     path: "{{ workdir }}/openshift-install-linux.tar.gz"

@@ -1,0 +1,15 @@
+cluster_network_cidr: 10.128.0.0/14
+cluster_network_host_prefix: 23
+service_network_cidr: 172.30.0.0/16
+additional_ntp_sources:
+- 0.rhel.pool.ntp.org
+- 1.rhel.pool.ntp.org
+
+generated_dir: "{{ workdir }}/generated"
+manifests_dir: "{{ generated_dir }}/{{ cluster_name }}"
+cluster_manifest_dir: "{{ manifests_dir }}/cluster-manifests"
+extra_manifest_dir: "{{ manifests_dir }}/openshift"
+
+manifests: false
+extra_manifests: []
+manifest_templates: "{{ extra_manifests }}"

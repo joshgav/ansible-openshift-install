@@ -1,0 +1,23 @@
+nodes:
+  masters:
+    - hostname: master2
+      role: master
+      installation_disk_path: /dev/vda
+      interfaces:
+        - name: enp1s0
+          macAddress: 52:54:00:ee:42:e3
+      network_config:
+        dns_server_ips:
+        - 192.168.146.1
+        interfaces:
+        - name: enp1s0
+          mac: 52:54:00:ee:42:e3
+          dhcp: true
+          enabled: true
+          state: up
+          type: ethernet
+        routes:
+        - destination: 0.0.0.0/0
+          address: 192.168.146.1
+          interface: enp1s0
+          table_id: 254

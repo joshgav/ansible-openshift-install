@@ -1,0 +1,49 @@
+#jinja2:trim_blocks: True, lstrip_blocks: True
+apiVersion: v1
+baseDomain: {{ base_dns_domain }}
+controlPlane:
+  name: master
+  replicas: 1
+compute:
+  - name: worker
+    replicas: 0
+metadata:
+  namespace: cluster0
+  name: {{ cluster_name }}
+networking:
+  networkType: OVNKubernetes
+  clusterNetwork:
+    - cidr:  {{ cluster_network_cidr }}
+      hostPrefix: {{ cluster_network_host_prefix }}
+    {% for cluster_network in (extra_cluster_networks | default([])) %}
+    - cidr: {{ cluster_network.cidr }}
+      hostPrefix: {{ cluster_network.host_prefix }}
+    {% endfor %}
+  {% if network_type is defined %}
+  {% endif %}
+  machineNetwork:
+    - cidr: {{ machine_network_cidr }}
+    {% for machine_network in (extra_machine_networks | default([])) %}
+    - cidr: {{ machine_network.cidr }}
+    {% endfor %}
+  serviceNetwork:
+    - {{ service_network_cidr }}
+    {% for service_network in (extra_service_networks | default([])) %}
+    - {{ service_network.cidr }}
+    {% endfor %}
+platform:
+  none: {}
+sshKey: {{ ssh_public_key }}
+pullSecret: '{{ pull_secret }}'
+{% if (http_proxy is defined and http_proxy != "") or (https_proxy is defined and https_proxy != "") or (no_proxy is defined and no_proxy != "") %}
+proxy:
+    {% if http_proxy is defined and http_proxy != "" %}
+    httpProxy: {{ http_proxy }}
+    {% endif %}
+    {% if https_proxy is defined and https_proxy != "" %}
+    httpsProxy: {{ https_proxy }}
+    {% endif %}
+    {% if no_proxy is defined and no_proxy != "" %}
+    noProxy: {{ no_proxy }}
+    {% endif %}
+{% endif %}

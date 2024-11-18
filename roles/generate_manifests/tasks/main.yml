@@ -1,0 +1,54 @@
+- name: Remove manifests dir
+  ansible.builtin.file:
+    name: "{{ manifests_dir }}"
+    state: absent
+  ignore_errors: true
+
+- name: Make cluster-manifests dir
+  ansible.builtin.file:
+    name: "{{ cluster_manifest_dir }}"
+    mode: 0775
+    recurse: true
+    state: directory
+
+# - name: Debug
+#   ansible.builtin.debug:
+#     msg: '{{ hostvars[groups["nodes"][0]] }}'
+
+- name: Render agent-config templates
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "{{ manifests_dir }}/{{ item.rsplit('.', 1)[0] }}"
+    mode: 0644
+    trim_blocks: true
+    lstrip_blocks: true
+  loop:
+    - agent-config.yaml.j2
+    - install-config.yaml.j2
+
+# The agent-config files are eventually deleted after its usage, just
+# save them in a safe place in case of needing to check them
+- name: Save a backup of agent-config files
+  fetch:
+    src: "{{ manifests_dir }}/{{ item }}"
+    dest: "{{ manifests_dir }}/{{ item }}.backup"
+    flat: true
+  loop:
+    - agent-config.yaml
+    - install-config.yaml
+
+- name: Create extra_manifest_dir dir
+  ansible.builtin.file:
+    name: "{{ extra_manifest_dir }}"
+    mode: 0775
+    recurse: true
+    state: directory
+  when:
+    - manifests | bool
+    - manifest_templates is defined
+    - manifest_templates | length >= 0
+
+# - name: Render extra_manifests
+#   ansible.builtin.include_tasks: manifest.yml
+#   loop: "{{ manifest_templates }}"
+#   when: manifests | bool
