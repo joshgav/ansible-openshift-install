@@ -1,0 +1,13 @@
+- name: Prepare OpenShift ISO
+  hosts: all
+  gather_facts: false
+
+  vars_files:
+    - all.yml
+    - secrets.yml
+    - topology.yml
+
+  roles:
+    - install_openshift_install
+    - generate_manifests
+    - generate_agent_iso

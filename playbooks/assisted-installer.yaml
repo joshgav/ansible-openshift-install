@@ -1,0 +1,35 @@
+- name: Prepare Assisted Installer ISO
+  hosts: localhost
+  collections:
+    - rhpds.assisted_installer
+
+  vars_files:
+    - ../vars/all.yml
+    - ../vars/secrets.yml
+
+  tasks:
+    - name: Debug
+      ansible.builtin.debug:
+        msg: "pull_secret: {{ pull_secret }}"
+        
+    - name: Create cluster definition
+      rhpds.assisted_installer.create_cluster:
+        name: "{{ cluster_name }}"
+        openshift_version: "{{ cluster_version }}"
+        base_dns_domain: "{{ cluster_base_domain }}"
+        offline_token: "{{ offline_token }}"
+        pull_secret: "{{ pull_secret }}"
+        high_availability_mode: "None"
+        service_networks:
+          - cidr: "172.31.0.0/16"
+      register: newcluster
+
+    - name: Create infrastructure environment
+      rhpds.assisted_installer.create_infra_env:
+        name: "{{ cluster_name }}-infra-env"
+        image_type: "{{ cluster_iso_type }}"
+        cluster_id: "{{ newcluster.result.id }}"
+        ssh_authorized_key: "{{ ssh_public_key }}"
+        offline_token: "{{ offline_token }}"
+        pull_secret: "{{ pull_secret }}"
+      register: newinfraenv

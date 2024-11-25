@@ -1,0 +1,9 @@
+all:
+    hosts:
+        bastion:
+            ansible_host: 147.75.203.55
+            ansible_user: ansible
+            ansible_connection: ssh
+            ansible_ssh_private_key_file: .ssh/id_rsa
+        localhost:
+            ansible_connection: local

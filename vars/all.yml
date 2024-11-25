@@ -1,6 +1,9 @@
-workdir: /tmp/ocpinstall/workdir
+workdir: "/tmp/ocpinstall/workdir"
 
-base_dns_domain: equinix.joshgav.com
-cluster_name: sno3
-machine_network_cidr: 192.168.146.0/24
-rendezvous_ip: 192.168.146.10
+cluster_name: "sno3"
+cluster_base_domain: "equinix.joshgav.com"
+cluster_version: "4.17"
+machine_network_cidr: "192.168.146.0/24"
+rendezvous_ip: "192.168.146.10"
+
+cluster_iso_type: "minimal-iso"

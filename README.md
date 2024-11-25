@@ -7,6 +7,15 @@
 
 ## Commands
 
+To generate an Assisted Installer draft cluster:
+
+```bash
+ansible-galaxy collection install -r requirements.yml
+ansible-playbook -i inventory.yml playbooks/assisted-installer.yaml  -e @vars/all.yml -e @vars/secrets.yml
+```
+
+Stuff for a custom execution environment for OpenShift/oc:
+
 ```bash
 ansible-builder build --tag k8s_ee
 
