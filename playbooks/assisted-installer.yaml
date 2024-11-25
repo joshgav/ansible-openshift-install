@@ -8,10 +8,6 @@
     - ../vars/secrets.yml
 
   tasks:
-    - name: Debug
-      ansible.builtin.debug:
-        msg: "pull_secret: {{ pull_secret }}"
-        
     - name: Create cluster definition
       rhpds.assisted_installer.create_cluster:
         name: "{{ cluster_name }}"
@@ -33,3 +29,7 @@
         offline_token: "{{ offline_token }}"
         pull_secret: "{{ pull_secret }}"
       register: newinfraenv
+
+    - name: Output ISO URL
+      ansible.builtin.debug:
+        msg: "ISO Download URL: {{ newinfraenv.result.download_url }}"
